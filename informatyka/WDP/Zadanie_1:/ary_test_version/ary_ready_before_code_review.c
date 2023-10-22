@@ -216,7 +216,7 @@ wartosc razy(wartosc a, wartosc b){
          iloraz.czy_anty = 0;
       }
       else if(in_wartosc(a,0) == 1){//b nie zawiera 0 ale 'a' zawiera
-         if(isinf(b.x) == -1 && isinf(b.y) == 1){//b jest całym przedziałem
+         if(isinf(b.x) == -1 && isinf(b.y) == 1){//b jest całym przedziałem//ten if może być useless
             iloraz.x = -HUGE_VAL;
             iloraz.y = HUGE_VAL;
             iloraz.czy_anty = 0;
