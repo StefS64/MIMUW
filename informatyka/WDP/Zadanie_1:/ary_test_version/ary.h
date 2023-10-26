@@ -21,6 +21,7 @@ wartosc wartosc_dokladnosc(double x, double p);
 /* warunek poczatkowy: x <= y                              */
 wartosc wartosc_od_do(double x, double y);
 
+
 /* wartosc_dokladna(x) zwraca wartość reprezentującą [x;x] */
 wartosc wartosc_dokladna(double x);
 

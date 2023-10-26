@@ -4,12 +4,10 @@
 #include <stdio.h>
 #include "ary.h"
 const double EPSILON = 1e-10;
-/*typedef struct wartosc {
-      double x,y;
-      bool czy_anty;  //przedział o krańcach x,y gdzie x <= y lub antyprzedzial, również przedział ma inf i -inf.
-      bool czy_nan;
-   } wartosc;
-*/
+
+// --------------------------------------------- //
+// CODE REVIEW ROBIONE PRZEZ GRZEGORZA JUSZCZYKA //
+// --------------------------------------------- //
 
 
 bool czy_zero(double x) {
@@ -117,7 +115,7 @@ double sr_wartosc(wartosc w){
 
 
 
-void swap( wartosc *a,  wartosc *b){
+void swap(wartosc *a,  wartosc *b){
    wartosc tymczasowa  = *a;
    *a = *b;
    *b = tymczasowa;
@@ -128,7 +126,6 @@ wartosc update_nan(){
    wartosc w;
    w.x = NAN;
    w.y = NAN;
-  // printf("halo\n");
    w.czy_nan = 1;
    w.czy_anty = 0;
    return w;
@@ -218,10 +215,18 @@ wartosc razy(wartosc a, wartosc b){
       }
    }
    else {
+
       if(a.czy_anty == 0){//a jest zawsze antyprzedziałem 
          swap(&a,&b);
       }
-      if(in_wartosc(b,0) == 1){//jeżeli b zawiera zero
+
+      if(fabs(b.x) <= EPSILON && fabs(b.y) <= EPSILON){//b jest zerem;
+         iloraz.x = 0.0;
+         iloraz.y = 0.0;
+         iloraz.czy_anty = 0;
+         iloraz.czy_nan = 0;
+      }
+      else if(in_wartosc(b,0) == 1){//jeżeli b zawiera zero
          iloraz.x = -HUGE_VAL;
          iloraz.y = HUGE_VAL;
          iloraz.czy_anty = 0;
@@ -353,7 +358,7 @@ wartosc odwrotnosc(wartosc a){
             odwrotny.y = 1/a.x;
             odwrotny.czy_anty = 0;
          }
-         else {//przedział ma oba krańce i  nie zawiera 0 [a,b] (a<b<0 lub b>a>0);
+         else {//przedział ma oba krańce i  nie zawiera 0 [a,b] (a < b < 0 lub 0 < a < b);
             odwrotny.x = 1/a.y;
             odwrotny.y = 1/a.x;
             odwrotny.czy_anty = 0;
@@ -408,20 +413,7 @@ void cout(wartosc a){
    printf("%.10lf %.10lf %d %d\n",a.x,a.y,a.czy_anty,a.czy_nan);
 }
 
-/*
 
-int main(){
-   wartosc a,b;
-   a.x = -100.0;
-   a.y = 98.0;
-   a.czy_anty = 1;
-   a.czy_nan = 0;
-   b.x = -99;
-   b.y = 101;
-   b.czy_anty = 1;
-   b.czy_nan = 0;
-   cout(razy(a,b));
-
-
-}
-*/
+// --------------------------------------------- //
+// CODE REVIEW ROBIONE PRZEZ GRZEGORZA JUSZCZYKA //
+// --------------------------------------------- //
