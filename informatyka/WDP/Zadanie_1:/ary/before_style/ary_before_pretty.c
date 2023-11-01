@@ -8,6 +8,7 @@ const double EPSILON = 1e-10;
 // --------------------------------------------- //
 // CODE REVIEW ROBIONE PRZEZ GRZEGORZA JUSZCZYKA //
 // --------------------------------------------- //
+void cout(wartosc a);
 
 
 bool czy_zero(double x) {
@@ -44,8 +45,8 @@ wartosc wartosc_dokladnosc(double x, double p){
 wartosc wartosc_od_do(double x, double y){
    wartosc przedzial;
    double srednia = (x+y)/2, roznica = (y-x)/2;/*wiemy że y > x*/
-   przedzial.x = srednia-roznica;
-   przedzial.y = srednia+roznica;
+   przedzial.x = srednia - roznica;
+   przedzial.y = srednia + roznica;
    przedzial.czy_nan = 0;
    przedzial.czy_anty = 0;
    return przedzial;
@@ -81,6 +82,9 @@ double min_wartosc(wartosc w){
       return -HUGE_VAL;
    }
    else if(w.czy_nan == 0){
+      if((bool)isinf(w.x) == 1){
+         return -HUGE_VAL;
+      }
       return w.x;
    }
    else{
@@ -95,6 +99,9 @@ double max_wartosc(wartosc w){
       return HUGE_VAL;
    }
    else if(w.czy_nan == 0) {
+      if((bool)isinf(w.y) == 1){
+         return HUGE_VAL;
+      }
       return w.y;
    }
    else{
@@ -179,11 +186,10 @@ wartosc minus(wartosc a, wartosc b){
    return plus(a,b);
 }
 
-void cout(wartosc w);
 
 wartosc razy(wartosc a, wartosc b){
    wartosc iloraz;
-   if(a.czy_nan == 1 ||b.czy_nan == 1){//czy NAN
+   if(a.czy_nan == 1 ||b.czy_nan == 1){//czy NANprint
       return update_nan();
    }
    if(a.czy_anty == 0 && b.czy_anty == 0){
@@ -194,30 +200,27 @@ wartosc razy(wartosc a, wartosc b){
          iloraz.czy_nan = 0;
       }
       else{
-         iloraz.x = min2x2(a.x,a.y,b.x,b.y);
-         iloraz.y = max2x2(a.x,a.y,b.x,b.y);
+         iloraz.x = min2x2(a.x, a.y, b.x, b.y);
+         iloraz.y = max2x2(a.x, a.y, b.x, b.y);
          iloraz.czy_anty = 0;
       }
    }
    else if(a.czy_anty == 1 && b.czy_anty == 1){//2 anty przedziały
-      if(in_wartosc(a,0)== 1 || in_wartosc(b,0) == 1){
+      if(in_wartosc(a, 0)== 1 || in_wartosc(b, 0) == 1){
          iloraz.x = -HUGE_VAL;
          iloraz.y = HUGE_VAL;
          iloraz.czy_anty = 0;
-         //printf("debug 3\n");
       }
       else {//nie zawiera zera więc nie mogą być dowolnie małe oraz a.x < 0 < a.y i b.x < 0 < b.y
-         iloraz.x = fmax(a.x*b.y,b.x*a.y);
-         iloraz.y = fmin(a.x*b.x,b.y*a.y);
+         iloraz.x = fmax(a.x * b.y, b.x * a.y);
+         iloraz.y = fmin(a.x * b.x, b.y * a.y);
          iloraz.czy_anty = 1;
-         //cout(iloraz);
-         //printf("debug 4\n");
       }
    }
    else {
-
+      //printf("a anty przedzial b nie jest\n");
       if(a.czy_anty == 0){//a jest zawsze antyprzedziałem 
-         swap(&a,&b);
+         swap(&a, &b);
       }
 
       if(fabs(b.x) <= EPSILON && fabs(b.y) <= EPSILON){//b jest zerem;
@@ -232,15 +235,16 @@ wartosc razy(wartosc a, wartosc b){
          iloraz.czy_anty = 0;
       }
       else if(in_wartosc(a,0) == 1){//b nie zawiera 0 ale 'a' zawiera
-         if(isinf(b.x) == -1 && isinf(b.y) == 1){//b jest całym przedziałem//ten if może być useless
+         //printf("a zawiera zero a b nie\n");
+         if((bool)isinf(b.x) == 1 && (bool)isinf(b.y) == 1){//b jest całym przedziałem//ten if może być useless
             iloraz.x = -HUGE_VAL;
             iloraz.y = HUGE_VAL;
             iloraz.czy_anty = 0;
          }
-         else if(isinf(b.x) == -1){//b nie ma lewej granicy
+         else if((bool)isinf(b.x) == 1){//b nie ma lewej granicy
             if(fabs(a.x) <= EPSILON){//a ma granicy lewej w zerze (uzyskujemy dowolnie bliskie prawej strony)
-               iloraz.y = 0;
                iloraz.x = b.y*a.y;
+               iloraz.y = 0;
                iloraz.czy_anty = 1;
             }
             else if (fabs(a.y) <= EPSILON){//prawy kraniec antyprzedzialu to zero
@@ -249,12 +253,13 @@ wartosc razy(wartosc a, wartosc b){
                iloraz.czy_anty = 1;
             }
             else {//żaden z krańców to nie zero
+               //printf("tutaj\n");
                iloraz.x = a.y*b.y;
                iloraz.y = a.x*b.y;
                iloraz.czy_anty = 1;
             }
          }
-         else if(isinf(b.y) == 1){
+         else if((bool)isinf(b.y) == 1){
             if(fabs(a.x) <= EPSILON){//lewy kraniec antyprzedziału to zero.
                iloraz.x = 0;
                iloraz.y = b.x*a.y;
@@ -271,27 +276,40 @@ wartosc razy(wartosc a, wartosc b){
                iloraz.czy_anty = 1;
             }
          } 
-         else {// a zawiera i jest anty oraz b jest zwykłym przedziałem (bez inf i zera)
-            iloraz.x = min2x2(a.x,a.y,b.x,b.y);
-            iloraz.y = max2x2(a.x,a.y,b.x,b.y);
-            iloraz.czy_anty = 1;
-            /*printf("debug");
-            cout(iloraz);
-            printf("debug");*/
-            
+         else {// a zawiera zero i jest antyprzedziałem oraz b jest zwykłym przedziałem (bez inf i zera)
+            if(b.x > 0.0){
+               iloraz.x = fmax(a.x*b.x, a.x*b.y);
+               iloraz.y = fmin(a.y*b.x, a.y*b.y);
+               iloraz.czy_anty = 1;
+            }
+            else{
+               iloraz.x = fmax(a.y*b.x, a.y*b.y);
+               iloraz.y = fmin(a.x*b.x, a.x*b.y);
+               iloraz.czy_anty = 1;
+            }
          }
       }
       else {//a ani b nie zwierają zera
-         iloraz.x = a.x*fmin(b.x,b.y);
-         iloraz.y = a.y*fmin(b.x,b.y);
-         iloraz.czy_anty = 1;
+         if(b.x > EPSILON){
+            iloraz.x = a.x*fmin(b.x, b.y);
+            iloraz.y = a.y*fmin(b.x, b.y);
+            iloraz.czy_anty = 1;
+            //printf("siema");
+         }
+         else{
+            //printf("siema");
+            iloraz.x = a.y*fmax(b.x, b.y);
+            iloraz.y = a.x*fmax(b.x, b.y);
+            iloraz.czy_anty = 1;
+         }
+         
+         //printf("debug doszło");
       }
    }
    if(iloraz.x >= iloraz.y-EPSILON && iloraz.czy_anty == 1){//jeżeli po sumie się pokrywają uzyskujemy cały obszar
       iloraz.x = HUGE_VAL;
       iloraz.y = -HUGE_VAL;
       iloraz.czy_anty = 0;
-      //printf("debug 2\n");
    }
    iloraz.czy_nan = 0;
    return iloraz;
@@ -309,8 +327,8 @@ wartosc odwrotnosc(wartosc a){
    }
    else if(a.czy_anty == 0){//a jest zwykłym przedziałem
       if(in_wartosc(a,0) == 1){ // a zawiera 0
-         if(isinf(a.x) == -1){
-            if(fabs(a.y) <= EPSILON || isinf(a.y) == 1){//(-inf,0] oraz (-inf,inf) przechodzi na sam siebie
+         if((bool)isinf(a.x) == 1){// a nie ma lewego krańca
+            if(fabs(a.y) <= EPSILON || (bool)isinf(a.y) == 1){//(-inf,0] oraz (-inf,inf) przechodzi na sam siebie
                return a;
             }
             else {//(-inf,a]
@@ -319,7 +337,7 @@ wartosc odwrotnosc(wartosc a){
                odwrotny.czy_anty = 1;
             }
          }
-         else if(isinf(a.y) == 1){
+         else if((bool)isinf(a.y) == 1){// a nie ma prawego krańca
             if(fabs(a.x) <= EPSILON){//[0,inf]
                return a;
             }
@@ -344,16 +362,21 @@ wartosc odwrotnosc(wartosc a){
                odwrotny.x = 1/a.x;
                odwrotny.y = 1/a.y;
                odwrotny.czy_anty = 1;
+               /*printf("debug a:\n");
+               cout(a);
+               printf("debug odwrotny:");
+               cout(odwrotny);*/
+
             }
          }
       }
       else {// a nie zawiera 0;
-         if(isinf(a.x) == -1){//(-inf,a] a < 0;
+         if((bool)isinf(a.x) == 1){//(-inf,a] a < 0;
             odwrotny.x = 1/a.y;
             odwrotny.y = 0;
             odwrotny.czy_anty = 0;
          }
-         else if(isinf(a.y) == 1){//[a,inf) a > 0;
+         else if((bool)isinf(a.y) == 1){//[a,inf) a > 0;
             odwrotny.x = 0;
             odwrotny.y = 1/a.x;
             odwrotny.czy_anty = 0;
@@ -366,6 +389,7 @@ wartosc odwrotnosc(wartosc a){
       }
    }
    else{//jest antyprzedziałem
+      //printf("mam zero\n");
       if(in_wartosc(a,0) == 1){//zawiera zero;
          if(fabs(a.x) <= EPSILON){//(-inf,0]+[y,inf) y > 0(//(-inf,0]+[0,inf) - nigdy nie zajdzie bo cały reprezentujemy poprzez (-inf,inf))
             odwrotny.x = -HUGE_VAL;
@@ -380,12 +404,12 @@ wartosc odwrotnosc(wartosc a){
          else if(a.x > EPSILON){//(-inf,x]+[y,inf) 0 < x < y
             odwrotny.x = 1/a.y;
             odwrotny.y = 1/a.x;
-            odwrotny.czy_anty = 0;
+            odwrotny.czy_anty = 1;
          }
          else if(a.y < EPSILON){//(-inf,x]+[y,inf) x < y < 0
             odwrotny.x = 1/a.y;
             odwrotny.y = 1/a.x;
-            odwrotny.czy_anty = 0;
+            odwrotny.czy_anty = 1;
          }
       }
       else {//(-inf,x]+[y,inf) x < 0 < y
@@ -404,6 +428,7 @@ wartosc podzielic(wartosc a, wartosc b){
    if(a.czy_nan == 1 ||b.czy_nan == 1){
       return update_nan();
    }
+   //cout(odwrotnosc(b));
    return razy(a,odwrotnosc(b));
 }
 
@@ -412,8 +437,17 @@ wartosc podzielic(wartosc a, wartosc b){
 void cout(wartosc a){
    printf("%.10lf %.10lf %d %d\n",a.x,a.y,a.czy_anty,a.czy_nan);
 }
-
-
+/*
+int main(){
+   wartosc ep4;
+   ep4.x = 1;
+   ep4.y = 7;
+   ep4.czy_anty = 1;
+   ep4.czy_nan = 0;
+   wartosc h = podzielic(wartosc_od_do(1, 2), ep4);
+   cout(h);
+}
+*/
 // --------------------------------------------- //
 // CODE REVIEW ROBIONE PRZEZ GRZEGORZA JUSZCZYKA //
 // --------------------------------------------- //
