@@ -24,8 +24,5 @@ int main(){
    char a[3],b[3];
    int input = scanf(" %s %s", a, b);
    input++;
-   printf("%s %s\n", a, b);
-   printf("%s\n", a);
-   printf("%s\n", b);
-   //printf("%s %s %d %d \n", a, b, input, are_palindromes(a,b));
+   printf("%s %s %d %d \n", a, b, input, are_palindromes(a,b));
 }

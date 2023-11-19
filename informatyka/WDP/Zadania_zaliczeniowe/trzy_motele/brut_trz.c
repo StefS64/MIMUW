@@ -21,12 +21,12 @@ int main(){
     int *num_motel = (int*)malloc((long unsigned int)n  * sizeof(int));
     int *miejsce_motel = (int*)malloc((long unsigned int)n * sizeof(int));
     for(int i = 0 ; i < n; i++){
-        scanf("%d%d", &num_motel[i], &miejsce_motel[i]);
+        if(!scanf("%d%d", &num_motel[i], &miejsce_motel[i]))printf("wrong input");
     }
    /* for(int i = 0 ; i <n; i++){
         printf("%d %d\n", num_motel[i], miejsce_motel[i]);
     }*/
-    int minim = INT_MAX , maxi = 0;
+    int minim = INT_MAX , maxi = -1;
     for(int a = 0; a < n; a++){
         for(int b = a+1; b < n; b++){
             for(int c = b+1; c < n; c++){
@@ -39,5 +39,9 @@ int main(){
         }
 
     }
-    printf("%d %d\n", minim, maxi);
+    if(maxi == -1 && minim == INT_MAX){
+        printf("0 0\n");
+    }else{
+        printf("%d %d\n", minim, maxi);
+    }
 }
