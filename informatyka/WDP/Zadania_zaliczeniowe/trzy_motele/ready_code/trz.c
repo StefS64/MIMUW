@@ -3,15 +3,15 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-typedef struct {
+typedef struct{
     int left_close;//pierwszy motel z innej sieci
-    int left_close_different;//drugi  motel z innej sieci niż pierwszy inny oraz od aktualnie rozpatrzanego
+    int left_close_different;//pierwszy taki motel którego sieć jest różna od rozpatrzanego oraz zdefiniowanego powyżej
     int right_close;
     int right_close_different;
 }closest_motel;
 
 
-
+//structura trzymająca odległość motelu oraz jego sieć
 typedef struct{
     int chain; 
     int distance;
@@ -20,7 +20,7 @@ typedef struct{
 
 //deklaracja zmiennych globalnych
 int Left[3] = {0, -1, -1};//wystarczy mieć po 3 motele z różnych śieci od lewej i od prawej strony tablicy.
-int Right[3]= {0, -1, -1};
+int Right[3] = {0, -1, -1};
 motel m_position[1000000];//siec oraz odleglosc od poczatku motela
 closest_motel T[1000000];
 int size;//ilość moteli/wielkość tablicy
@@ -49,10 +49,14 @@ void input(){
 
 void set_minus_one(int num){
     T[num].left_close = -1;
-    T[num].left_close_different =  -1;
+    T[num].left_close_different = -1;
 }
 
-void pre_proces_max_left(){//znajduje 3 pierwsze hotele z lewej strony które należą do 3 różnych sieci
+/*
+znajduje 3 pierwsze hotele z lewej strony które należą do 3 różnych sieci
+*/
+
+void pre_proces_max_left(){
     int count = 1;
     int i = 1;
     while(i < size && count < 2){
@@ -71,20 +75,26 @@ void pre_proces_max_left(){//znajduje 3 pierwsze hotele z lewej strony które na
     }
 }
 
-void pre_proces_min_left(){//preprocessing tablicy T lewych indeksów czyli motel pierwszy najbliższy z lewej strony w innej sieci niż rozpatrzany i pierwszy drugi motel w innej sieci niz najbliższy i rozpatrzany
+/*
+preprocessing tablicy T lewych indeksów, pierwszych dwóch taki moteli, że pierwszy jest
+najbliższym z innej sieci, z lewej strony. A następny jest najbliższy motel z innej sieci,
+niż rozpatrzany oraz znaleziony najbliższy.
+*/
+
+void pre_proces_min_left(){
     set_minus_one(0);
     for(int i = 1; i < size; i++){
-        if(m_position[i-1].chain != m_position[i].chain){//zeszły różna siec od aktualnie rozpatrzanego, więc jest najbliższym z różnej sieci
+        if(m_position[i-1].chain != m_position[i].chain){//motel o jeden wcześniej jest z innej sieci, jest najbliższym z innej sieci
             T[i].left_close = i-1;
             if(T[i-1].left_close == -1){//jeżeli nie istnieje pierwszy różny od lewego
                 T[i].left_close_different = -1;
             }
-            else if(m_position[T[i-1].left_close].chain != m_position[i].chain){// jeżel są z różnych sieci
+            else if(m_position[T[i-1].left_close].chain != m_position[i].chain){//jeżel są z różnych sieci
                 T[i].left_close_different = T[i-1].left_close;
-            }else{//jeżeli są z tej samej to dalszy będzie tym samym dalszym co aktuanlnie rozpatrzany
+            }else{//jeżeli są z tej samej sieci to dalszy będzie tym samym dalszym dla aktuanlnie rozpatrzany
                 T[i].left_close_different = T[i-1].left_close_different;
             }
-        }else{//sąsiad jest tą samą siecią więc ma te same najbliższe lewej motele.
+        }else{//lewy sąsiad jest z tej samej sieci, więc ma te same najbliższe motele
             T[i].left_close = T[i-1].left_close;
             T[i].left_close_different = T[i-1].left_close_different;
         }
@@ -99,17 +109,25 @@ void swap(motel *A, motel *B){
     *B = temp;
 }
 
+/*
+funkcje do preprocesingu prawego:
+*/
 
-//funkcje do preprocesingu prawego
-void reverse_m_postion(){//odwrócenie tablicy
+/*
+funkcja odwracająca tablicę pozycji oraz sieci
+*/
+
+void reverse_m_postion(){
     for(int i = 0; i < size/2; i ++){
         swap(&m_position[i], &m_position[size-i-1]);
     }
 }
 
+/*
+funkcja po obróceniu tablicy oblicza prawy pre-procesing i wpisuje wyniki na odpowiednie pozycje
+*/
 
-
-void pre_proces_min_right(){//funkcja po obróceniu tablicy oblicza prawy pre-procesing i wpisuje na odpowiednie pozycje
+void pre_proces_min_right(){
     pre_proces_min_left();
     for(int i = 0; i < size; i ++){
         T[i].right_close = T[size-i-1].left_close;
@@ -117,9 +135,11 @@ void pre_proces_min_right(){//funkcja po obróceniu tablicy oblicza prawy pre-pr
     }
 }
 
+/*
+oblicza dla obróconej i przepisuje do odpowidniej tablicy
+*/
 
-
-void pre_proces_max_right(){//oblicza dla obróconej i przepisuje do odpowidniej tablicy
+void pre_proces_max_right(){
     pre_proces_max_left();
     for(int i = 0; i < 3; i++){
         Right[i] = Left[i];
@@ -137,11 +157,13 @@ void pre_proces_right(){
 
 
 
-int seperation(int A, int B){//odleglosc pomiedzy motelami
+int seperation(int A, int B){
     return abs(m_position[A].distance - m_position[B].distance);
 }
 
-
+/*
+odczytuje odleglosc maxymalną odległość A-B lub B-C gdzie B jest środkowym motelem
+*/
 
 int find_max_of_closest_values_for_motel(int index){
     if(T[index].left_close == -1 || T[index].right_close == -1){//czy mają najbliższe motele z obu stron
@@ -165,24 +187,30 @@ int find_max_of_closest_values_for_motel(int index){
     }
 }
 
+/*
+sprawdza czy trójka moteli o indexach w kolejności L, index, R spełnia warunki by odczytać odległość
+*/
 
-
-bool check_if_ok(int L, int index, int R){//sprawdza czy trójka moteli o indexach w kolejności L, index, R spełnia warunki by odczytać odległość
+bool check_if_ok(int L, int index, int R){
+    #define diffchain(a, b) (m_position[a].chain != m_position[b].chain)
     if(L == -1 || R == -1){
         return 0;
     }
     else if(m_position[L].distance > m_position[index].distance || m_position[size-1-R].distance < m_position[index].distance){//sprawdza czy są w dobrej kolejności
         return 0;
     }
-    else if(m_position[L].chain != m_position[size-1-R].chain && m_position[index].chain != m_position[size-1-R].chain && m_position[L].chain != m_position[index].chain){//sprawdza czy są z różnych sieci
-        return 1;//UWAGA tu ewentualnie można funkcję robiąca to ^^ lecz jest to jedyna instancja w tym programie
+    else if(diffchain(L, size-1-R) && diffchain(index, size-1-R) && diffchain(index, L)){//sprawdza czy są z różnych sieci
+        return 1;
     }
     return 0;
+    #undef diffchain
 }
 
+/*
+znajduje maximum z trójki najbardziej oddalonych moteli przechodzac po wszystkich kombinacjach tablic Right oraz Left
+*/
 
-
-int find_min_of_furthest_values_for_motel(int index){//znajduje maximów z trójki najbardziej oddalonych moteli przechodzac po wszystkich kombinacjach tablic Right oraz Left
+int find_min_of_furthest_values_for_motel(int index){
     int Max = -1;
     for(int i = 0; i < 3; i++){
         for(int j = 0; j < 3; j++){
@@ -196,7 +224,7 @@ int find_min_of_furthest_values_for_motel(int index){//znajduje maximów z trój
 
 
 
-void answer(){//wypisuje wynik
+void answer(){
     int ansmin = INT_MAX;
     int ansmax = -1;
     for(int i = 0; i < size; i++){
@@ -213,7 +241,10 @@ void answer(){//wypisuje wynik
 }
 
 
-//funkcje sprawdzające do debugowania
+/*
+funkcje sprawdzające do debugowania
+*/
+
 void cout_input(){
     for(int i = 0; i < size; i++){
         printf("%d %d\n", m_position[i].chain, m_position[i].distance);
