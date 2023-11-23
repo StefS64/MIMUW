@@ -1,0 +1,10 @@
+Kilka testów do zadania ori
+Autor paczki: Franciszek Witt
+Skrypt testujący: Kamil Szymczak
+
+Testy nie sprawdzają precyzji arytmetyki, a jedynie złośliwe przypadki brzegowe.
+
+Nie ma gwarancji, że kod przechodzący wszystkie testy jest w 100% poprawny.
+
+Aby użyć gotowego skryptu tester.sh, umieść pliki ori.c oraz opcje (plik z opcjami kompilacji) w nadfolderze folderu z tą paczką, a następnie uruchom komendę ./tester.sh.
+
