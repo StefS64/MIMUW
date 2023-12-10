@@ -7,7 +7,7 @@ int main(){
    int seed;
    cin >> seed;
    srand(seed);
-   int n = random(1, 1000000);
+   int n = random(1, 10000);
    int Min = 0;
    cout << n<<endl;
    for(int i = 0;i < n; i++){

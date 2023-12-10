@@ -1,4 +1,4 @@
-#include <stdio.h>
+fun#include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -22,7 +22,7 @@ typedef struct{
 
 
 bool czy_w_okregu(zespo X, zespo O, double r){
-    if(sqrt((X.re - O.re) * (X.re - O.re) + (X.im - O.im) * (X.im - O.im)) - r < EPSILON){
+    if(sqrt((X.re-O.re)*(X.re-O.re) + (X.im-O.im)*(X.im-O.im)) - r < EPSILON){
         return true;
     }else{
         return false;
@@ -32,7 +32,7 @@ bool czy_w_okregu(zespo X, zespo O, double r){
 
 
 bool czy_w_prostokacie(zespo X, zespo A, zespo B){
-    if( A.re - EPSILON < X.re &&  A.im - EPSILON < X.im && EPSILON + B.re > X.re && EPSILON + B.im > X.im){
+    if( A.re-EPSILON < X.re &&  A.im-EPSILON < X.im && EPSILON+B.re > X.re && EPSILON+B.im > X.im){
         return true;
     }else{
         return false;
@@ -52,32 +52,32 @@ zespo suma(zespo A, zespo B){//dodaje dwie liczby
 
 zespo iloczyn(zespo A, zespo B){//mnoży dwie liczby
     zespo wyn;
-    wyn.re = A.re * B.re - B.im * A.im;
-    wyn.im = A.re * B.im + A.im * B.re;
+    wyn.re = A.re*B.re-B.im*A.im;
+    wyn.im = A.re*B.im+A.im*B.re;
     return wyn;
 }
 
 
 
 zespo wektor_kierunkowy(zespo A){//zwraca wektor na okregu jednostkowym o tym samym argumencie co A
-    double arg = sqrt(A.re * A.re + A.im * A.im);
-    A.re = A.re / arg;
-    A.im = A.im / arg;
+    double arg = sqrt(A.re*A.re+A.im*A.im);
+    A.re = A.re/arg;
+    A.im = A.im/arg;
     return A; 
 }
 
 
 
 zespo przeciwny(zespo A){
-    A.re *= -1;
-    A.im *= -1;
+    A.re *=-1;
+    A.im *=-1;
     return A;
 }
 
 
 
 zespo sprzezony(zespo A){
-    A.im *= -1;
+    A.im *=-1;
     return A;
 }
 
@@ -86,7 +86,7 @@ zespo sprzezony(zespo A){
 int stron(zespo X, zespo A, zespo B){//zwraca po ktorej stronie prostej AB jest X
     B = suma(B, przeciwny(A));
     X = suma(X, przeciwny(A));
-    double il_wek = X.re * B.im - X.im * B.re;
+    double il_wek = X.re*B.im - X.im*B.re;
     if(fabs(il_wek) <= EPSILON){
         return 0;//na prostej
     }else if(il_wek > EPSILON){
@@ -164,7 +164,7 @@ int ile_przebic(int num_k, zespo X,kartka *T){
 int main(){
     int n, zapytania;
     assert(scanf("%d %d", &n, &zapytania));
-    kartka *T = malloc(sizeof(kartka) * (size_t)(n+1));
+    kartka *T = malloc(sizeof(kartka)*(size_t)(n+1));
     input(n, T);
     zespo X;
     int k;

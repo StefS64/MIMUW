@@ -1,3 +1,6 @@
+//Stefan Świerczewski
+//code review robione przez Atanazy Gawrysiak
+
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
