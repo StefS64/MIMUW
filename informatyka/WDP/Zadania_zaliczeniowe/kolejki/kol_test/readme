@@ -1,0 +1,103 @@
+Tester do zadania Kolejki
+Autor: Kamil Szymczak
+
+Generuje losowe testy, które sprawdzają poprawność implementacji
+rozwiązania do zadania kolejki.
+
+
+Przy każdym uruchomieniu program będzie generował tę samą sekwencję testów.
+
+Liczbę testów można modyfikować, zmieniając zakres pętli for w skryptach
+tester.sh oraz tester_valgrind.sh. Domyślna liczba to 20. Polecam przetestować
+przynajmniej dla tysiąca.
+
+
+Instrukcja obsługi:
+
+Umieszczamy nasz plik kol.cpp oraz kol.h w folderze z plikami
+z tej paczki, a następnie uruchamiamy tester komendą
+
+./tester.sh
+
+lub jeśli chcemy używać valgrinda przy testowaniu
+
+./tester_valgrind.sh
+
+
+Jeśli nie chcemy, żeby tester wypisywał kroki wykonywane przez
+nasz program, to należy odkomentować instrukcję
+
+#undef DEBUG
+
+w pliku tester.cpp.
+
+
+Jeśli chcemy generować testy różnych rozmiarów (na przykład małe)
+w celu debugowania programu, należy zmienić wartości m oraz q
+(rozmiar urzędu i liczbę zapytań) losowane w liniach 46 i 47 w 
+pliku tester.cpp. Domyślnie jest
+
+int m = randint(1, 20); 
+int q = randint(1, 20);
+
+Jeśli coś nie działa i chcemy znaleźć mały test, na którym nie działa,
+można ustawić na przykład
+
+int m = randint(1, 4); 
+int q = randint(1, 8);
+
+lub bardzo duże
+
+int m = randint(1, 1000); 
+int q = randint(1, 1000);
+
+
+
+Przykładowy output pojedynczego wywołania programu zakładając, że nie zakomentowaliśmy #undef DEBUG:
+
+ziarno = 1
+m = 2
+zaczynamy
+
+nowy_interesant na kolejce 0
+
+stan kolejek:
+0: 0 
+1: 
+
+numerek interesanta poprawny
+
+stan kolejek:
+0: 0 
+1: 
+
+nowy_interesant na kolejce 1
+
+stan kolejek:
+0: 0 
+1: 1 
+
+zmieniam okienko interesanta o numerku 1
+znalazlem interesanta przy okienku 1
+przenosze go do okienka 0
+
+stan kolejek:
+0: 0 1 
+1: 
+
+fast track dla kolejki 0
+pierwszy interesant to 0 ostatni to 1
+
+stan kolejek:
+0: 
+1: 
+
+obsluz dla k = 0: kolejka pusta
+
+stan kolejek:
+0: 
+1:
+
+
+UWAGA: To tylko przykładowy tester i nie ma gwarancji, że program przechodzący te
+testy jest w 100% poprawny.

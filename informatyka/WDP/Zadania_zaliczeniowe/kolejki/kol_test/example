@@ -1,0 +1,42 @@
+ziarno = 1
+m = 2
+zaczynamy
+
+nowy_interesant na kolejce 0
+
+stan kolejek:
+0: 0 
+1: 
+
+numerek interesanta poprawny
+
+stan kolejek:
+0: 0 
+1: 
+
+nowy_interesant na kolejce 1
+
+stan kolejek:
+0: 0 
+1: 1 
+
+zmieniam okienko interesanta o numerku 1
+znalazlem interesanta przy okienku 1
+przenosze go do okienka 0
+
+stan kolejek:
+0: 0 1 
+1: 
+
+fast track dla kolejki 0
+pierwszy interesant to 0 ostatni to 1
+
+stan kolejek:
+0: 
+1: 
+
+obsluz dla k = 0: kolejka pusta
+
+stan kolejek:
+0: 
+1:

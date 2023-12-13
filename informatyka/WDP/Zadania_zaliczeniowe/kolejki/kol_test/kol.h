@@ -13,7 +13,9 @@
 // Należy wypełnić
 struct interesant {
     // Twój kod zaczyna się tu
-
+    interesant *A;
+    interesant *B;
+    int liczba;
     // A kończy tu
 };
 
@@ -30,6 +32,7 @@ void otwarcie_urzedu(int m);
  * @param k numer okienka, do którego ustawia się nowy interesant
  * @return interesant* wskaźnik na strukturę nowego interesanta
  */
+void show_kolejki();
 
 interesant *nowy_interesant(int k);
 
