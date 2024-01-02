@@ -1,0 +1,29 @@
+kol.h:
+
+16: zmieniłbym jednak nazwy sąsiadów elementu w liście, duże litery wyglądają nienaturalnie
+może lepiej s1, s2 jako sąsiad?
+
+kol.cpp:
+
+1: niepotrzebne biblioteki do wywalenia
+13: niepotrzebny komentarz
+15: możesz dopisać, że to implementacja z wykładu
+15: w komentarzu możesz dokładniej opisać po co są strażnicy (nie atrapy) 
+27: funkcja stworz_liste też jest funkcją pomocniczą, więc ten komentarz możesz dać wyżej
+29: używaj proszę polskich znaków w komentarzach "przełącza wskaźnik aktualnego ze starego na nowy"
+40: trochę brak spójności w komentarzu, raz piszesz "stworzenie", raz "przełącza", raz "dodaj", lepiej używać
+tej samej formy wszędzie, też zamieniłbym "koniec kolejki" na "koniec listy", bo tu nie ma nic o kolejkach jeszcze,
+możesz też dopisać jaki element dodajemy
+47: możesz dodac w komentarzu co dokładnie robi ta funkcja z każdą z list l1, l2
+59: możesz to napisać bardziej w kontekście listy (kolejek jeszcze nie ma)
+64: "może to być atrapa" zamiast "atrapą"
+78: trochę niejasna nazwa funkcji
+86: "dowolnych", "człowiek", możesz dopisać w jakiej kolejności są wrzucani na wektor i nie do końca rozumiem co znaczy, że usuwa dowolnych
+97: widzę, że zacząłes komentować, możesz dokończyć i dopisać co tu się dzieje ;)
+134: lepiej nazwać funkcję "odwróć" na przykład
+
+
+
+
+
+

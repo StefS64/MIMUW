@@ -2,44 +2,155 @@
 #include <vector>
 #include <cstdlib>
 #include "kol.h"
-#include <iostream>
-using namespace std;
 
-typedef struct lista{
+struct lista{
    interesant *head;
    interesant *tail;
-} lista;
+};
 
-vector<lista> kol;
-int numer = 0;
-lista stworz_liste() {//stworzenie listy dwie atrapy jedna na początek jedna na koniec
-   lista res = {
-      .head = (interesant*)malloc(sizeof(interesant)),
-      .tail = (interesant*)malloc(sizeof(interesant))
+/*DEKLARACJA FUNKCJI POMOCNICZYCH*/
+/*
+stworzenie listy dwóch strażników w kolejce implementacja jak na wykładzie.
+każdy strażnik reprezentuje koniec i początek kolejki, niekoniecznie
+każdy jest zawsze końcem lub początkiem, mogą się zamieniać.
+*/
+
+lista stworz_liste() {
+   lista res {
+      new interesant,//head
+      new interesant //tail
    };
-   res.head->A = NULL;
-   res.head->B = res.tail;
-   res.tail->A = NULL;
-   res.tail->B = res.head;
+   res.head->a = NULL;
+   res.head->b = res.tail;
+   res.tail->a = NULL;
+   res.tail->b = res.head;
    return res;
 }
 
-/*DEKLARACJA WŁASNYCH FUNKCJI*/
+/*
+przełącza wskaźniki aktualnego interesanta z starego na nowy.
+*/
 
-bool czy_pusta(lista l){
-   return l.tail->B == l.head;
-}
-
-void polacz(interesant *&akt, interesant *&stary, interesant *&nowy) {//przelacza wskazniki aktualnego z starego wskaznika na nowy
+void polacz(interesant *akt, interesant *stary, interesant *nowy) {
    if (akt) {
-      if(akt->A == stary){
-         akt->A = nowy;
+      if(akt->a == stary){
+         akt->a = nowy;
       }
       else{
-         akt->B = nowy;
+         akt->b = nowy;
       }
    }
 }
+
+/*
+dodaje na koniec listy "l" interesanta nowy.
+*/
+
+void dodaj_na_koniec(lista &l, interesant *nowy){
+   nowy->a = l.head;
+   nowy->b = l.head->b;
+   polacz(l.head->b, l.head, nowy);
+   l.head->b = nowy;
+}
+
+/*
+funkcja bierze dwie listy "l1" i "l2" dołącza całą listę "l1" na koniec "l2".
+liste "l1" pozostawia pustą
+*/
+
+void scal(lista &l1, lista &l2) {
+   interesant *x = l2.head;
+   interesant *y = l1.tail;
+   polacz(x->b, x, y->b);
+   polacz(y->b, y, x->b);
+   x->b = y;
+   y->b = x;
+   l2.head = l1.head;
+   l1.tail = y;
+   l1.head = x;
+}
+
+/*
+łączy wskazniki sąsiadów człowieka skutecznie wykluczając go z kolejki.
+*/
+
+void usun_interesanta(interesant *czlowiek) {
+   polacz(czlowiek->a, czlowiek, czlowiek->b);
+   polacz(czlowiek->b, czlowiek, czlowiek->a);
+}
+
+/*
+znając aktualnego i poprzedniego interesanta od którego przyszliśmy(może być strażnikiem),
+zwraca następnego.
+*/
+
+interesant *zwroc_interesanta_w_dobrym_kierunku(interesant *akt, interesant *&zeszly){
+   if(akt){
+      if(akt->a != zeszly){
+         zeszly = akt;
+         return akt->a;
+      }
+      else{
+         zeszly = akt;
+         return akt->b;
+      }
+   }
+   return akt;
+}
+
+/*
+idzie od aktualnego do stopu, wrzucając odpowiednio interesantów, przez których przechodzi do wektora.
+*/
+
+void dodaj_do_momentu(interesant *aktualny, interesant *poprzedni, interesant *stop, std::vector<interesant*> &wyn){
+   wyn.push_back(aktualny);
+   while(aktualny != stop){
+      aktualny = zwroc_interesanta_w_dobrym_kierunku(aktualny, poprzedni);
+      wyn.push_back(aktualny);
+   }
+}
+
+/*
+usuwa dowlnych interesantów od człowieka do osoby, wkładając przy tym usuniętych na vector.
+idzie od dalszego w kolejce interesanta i szuka w obie strony kolejki pierwszego. Jak znajdzie,
+to zaczyna odpowiednio usuwać interesantów od znalezionego "człowieka"(pierwszego) do "osoby".
+wiemy, że "człowiek" zawsze stoi przed "osoba" w kolejce.
+*/
+
+std::vector<interesant*> usun_interesantow(interesant *czlowiek, interesant *osoba){
+   interesant *strona_A = osoba->a, *strona_B = osoba->b, *zeszly_A = osoba, *zeszly_B = osoba;
+   std::vector<interesant*> wyn;
+   while (zeszly_A != czlowiek && zeszly_B != czlowiek){
+      if(strona_A){
+         strona_A = zwroc_interesanta_w_dobrym_kierunku(strona_A, zeszly_A);
+      }
+      if(strona_B){
+         strona_B = zwroc_interesanta_w_dobrym_kierunku(strona_B, zeszly_B);
+      }
+   }
+   if(zeszly_A == czlowiek){//
+      dodaj_do_momentu(zeszly_A, strona_A, osoba, wyn);
+      polacz(strona_A, zeszly_A, osoba->b);
+      polacz(osoba->b, osoba, strona_A);
+   }
+   else{
+      dodaj_do_momentu(zeszly_B, strona_B, osoba, wyn);
+      polacz(strona_B, zeszly_B, osoba->a);
+      polacz(osoba->a, osoba, strona_B);
+   }
+   return wyn;
+}
+
+bool czy_pusta(lista l){
+   return l.tail->b == l.head;
+}
+
+/*KONIEC FUNKCJI POMOCNICZYCH*/
+
+/*FUNCKJE SPECYFIKACJI BIBLIOTECZKI*/
+
+std::vector<lista> kol;
+int numer = 0;
 
 void otwarcie_urzedu(int m){
    for(int i = 0; i < m; i++){
@@ -47,99 +158,11 @@ void otwarcie_urzedu(int m){
    }
 }
 
-void dodaj_na_koniec(lista &l, interesant *&nowy){
-   nowy->A = l.head;
-   nowy->B = l.head->B;
-   polacz(l.head->B, l.head, nowy);
-   l.head->B = nowy;
-}
-
-void scal(lista &l1, lista &l2) {
-   interesant *x = l2.head;
-   interesant *y = l1.tail;
-   polacz(x->B, x, y->B);
-   polacz(y->B, y, x->B);
-   x->B = y;
-   y->B = x;
-   l2.head = l1.head;
-   l1.tail = y;
-   l1.head = x;
-}
-
-void usun_interesanta(interesant *czlowiek) {//dlaczego tu bez referencji?
-   polacz(czlowiek->A, czlowiek, czlowiek->B);
-   polacz(czlowiek->B, czlowiek, czlowiek->A);
-}
-
 interesant *nowy_interesant(int k){
    interesant *nowy = (interesant*)malloc(sizeof(interesant));
    nowy->liczba = numer++;
    dodaj_na_koniec(kol[k], nowy);
    return nowy;
-}
-
-interesant *nastepny(interesant *akt, interesant *&zeszly){
-   if(akt){
-      if(akt->A != zeszly){
-         zeszly = akt;
-         return akt->A;
-      }
-      else{
-         zeszly = akt;
-         return akt->B;
-      }
-   }
-   return akt;
-}
-
-void show(lista l, int num){
-   interesant* print = l.tail->B;
-   interesant* zeszly = l.tail;
-   cout <<num<<": ";
-   while(print != l.head){
-      cout <<print->liczba<<" ";
-      print = nastepny(print, zeszly);
-   }cout<<endl;   
-}
-
-void show_kolejki(){
-   for(int i  = 0; i < (int)kol.size(); i++){
-      show(kol[i], i);
-   }
-}
-
-void dodaj_do_momentu(interesant *aktualny, interesant *poprzedni, interesant *stop, vector<interesant*> &wyn){
-   wyn.push_back(aktualny);
-   //cout<<"hello"<<endl;
-   while(aktualny != stop){
-      
-      aktualny = nastepny(aktualny, poprzedni);
-      wyn.push_back(aktualny);
-   }
-}
-
-vector<interesant*> usun_interesantow(interesant *&czlowiek, interesant *&osoba){
-   interesant *strona_A = osoba->A, *strona_B = osoba->B, *zeszly_A = osoba, *zeszly_B = osoba;
-   vector<interesant*> wyn;
-   while (zeszly_A != czlowiek && zeszly_B != czlowiek){
-      if(strona_A){
-         strona_A = nastepny(strona_A, zeszly_A);
-      }
-      if(strona_B){
-         strona_B = nastepny(strona_B, zeszly_B);
-      }
-   }
-   if(zeszly_A == czlowiek){\
-      dodaj_do_momentu(zeszly_A, strona_A, osoba, wyn);
-      polacz(strona_A, zeszly_A, osoba->B);
-      polacz(osoba->B, osoba, strona_A);
-   }
-   else{
-      dodaj_do_momentu(zeszly_B, strona_B, osoba, wyn);
-      polacz(strona_B, zeszly_B, osoba->A);
-      polacz(osoba->A, osoba, strona_B);
-   }
-   return wyn;
 }
 
 void zamien(lista &l){
@@ -155,8 +178,8 @@ int numerek(interesant *i){
 interesant *obsluz(int k){
    interesant *obsluzono = NULL;
    if(!czy_pusta(kol[k])){
-      obsluzono = kol[k].tail->B;
-      usun_interesanta(kol[k].tail->B);
+      obsluzono = kol[k].tail->b;
+      usun_interesanta(kol[k].tail->b);
    }
    return obsluzono;
 }
@@ -169,20 +192,23 @@ void zmiana_okienka(interesant *i, int k){
 void zamkniecie_okienka(int k1, int k2){
    scal(kol[k1], kol[k2]);
 }
-vector<interesant*> fast_track(interesant *i1, interesant *i2){
+
+std::vector<interesant*> fast_track(interesant *i1, interesant *i2){
    return usun_interesantow(i1, i2);
 }
+
 void naczelnik(int k){
    zamien(kol[k]);
 }
-vector<interesant*> zamkniecie_urzedu(){
-   vector<interesant*> wyn;
+
+std::vector<interesant*> zamkniecie_urzedu(){
+   std::vector<interesant*> wyn;
    for(int i  = 0; i < (int)kol.size(); i++){
       if(!czy_pusta(kol[i])){
-         dodaj_do_momentu(kol[i].tail->B, kol[i].tail, kol[i].head->B, wyn);
+         dodaj_do_momentu(kol[i].tail->b, kol[i].tail, kol[i].head->b, wyn);
       }
-      free(kol[i].head);
-      free(kol[i].tail);
+      delete(kol[i].head);
+      delete(kol[i].tail);
    }
    kol.clear();
    return wyn;

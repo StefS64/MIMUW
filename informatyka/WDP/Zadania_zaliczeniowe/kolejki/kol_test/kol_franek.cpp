@@ -34,7 +34,7 @@ bool czy_pusta_lista(lista &l)
 
 void link(interesant *&el, interesant *&old, interesant *&nw) // zerwanie połączenia elementu listy el z old i połączenie go z nw
 {
-    if (el != NULL)
+    if (el != NULL)// UWAGA po prostu (el)
     {
         if (el->el2 == old) // sprawdzamy "z której strony" elementu el jest element old i zamieniamy go na nw
         {
@@ -49,7 +49,7 @@ void link(interesant *&el, interesant *&old, interesant *&nw) // zerwanie połą
 
 void dodaj_na_tyl(lista &l, interesant *i) // wstawia na koniec listy l interesanta i
 {
-    i->el1 = l.ogon;      // wstawiamy interesanta między ogon listy (strażnika),
+    i->el1 = l.ogon;      // wstawiamy interesanta między ogon listy (strażnika),//UWAGA może lepiej napisac i jej faktyczny element
     i->el2 = l.ogon->el2; // a jej faktyczny ostatni element
     link(l.ogon->el2, l.ogon, i);
     link(l.ogon, l.ogon->el2, i);
@@ -68,7 +68,7 @@ void usun_interesanta(interesant *el) // usuwa element el (ale nie zwalnia pami�
     link(el->el2, el, el->el1);
 }
 
-interesant *usun_pierwszy(lista &l) // usuwa pierwszegy element listy l i zwraca wskaźnik na niego lub NULL, jeśli lista była pusta
+interesant *usun_pierwszy(lista &l) // usuwa pierwszegy element listy l i zwraca wskaźnik na niego lub NULL, jeśli lista była pusta//UWAGA literówka
 {
     if (czy_pusta_lista(l))
     {
@@ -94,7 +94,7 @@ void polacz_listy(lista &lis1, lista &lis2) // podpina listę lis2 do lis1, a z 
 /* POCZĄTEK DEFINICJI FUNKCJI Z ZADANIA */
 
 lista *okienka = NULL;
-int ile_okienek = 0;
+int ile_okienek = 0;//UWAGA globalne i tak są zerowe xd
 int ile_interesantow = 0; // równoważnie: ile numerków zostało wydanych
 
 void otwarcie_urzedu(int m)
@@ -139,7 +139,7 @@ void zamkniecie_okienka(int k1, int k2)
 // założenie: ostatni == aktualny->el1 || ostatni == aktualny->el2
 void kroczek(interesant *&aktualny, interesant *&ostatni) // funkcja, która przesuwa wskaźniki aktualny i ostatni w stronę wskaźnika aktualny
 {
-    if (aktualny != NULL)
+    if (aktualny != NULL)//UWAGA znowu if(aktualny)
     {
         if (aktualny->el1 == ostatni)
         {
@@ -161,7 +161,7 @@ vector<interesant *> fast_track(interesant *i1, interesant *i2)
         usun_interesanta(i1);
         return {i1};
     }
-    // ponieważ w liście nie określamy kierunku dowiązań, żeby znaleźć połączenie między i1 a i2 musimy, idąc od i1, "rozszerzać" się w obie strony naraz, dlatego
+    // ponieważ w liście nie określamy kierunku dowiązań, żeby znaleźć połączenie między i1 a i2 musimy, idąc od i1, "rozszerzać" się w obie strony naraz, dlatego//UWAGA ZDANIA KOŃCZ  ZA DUŻO przecinków
     // bęzdziemy trzymali dwa wektory potencjalnych wyników. Jeśli znajdziemy i2 albo dojdziemy do NULL to wybierzemy ten własciwy wektor interesantów między i1 a i2
     vector<interesant *> wyn1 = {i1}; // idziemy od interesanta i1 w kierunku el1
     vector<interesant *> wyn2 = {i1}; // idziemy od interesanta i2 w kierunku el2
@@ -190,14 +190,14 @@ vector<interesant *> fast_track(interesant *i1, interesant *i2)
         link(akt1, i2, i1->el2);
         return wyn1;
     }
-
+    //UWAGA wciecie
     // dobry_kierunek == 1, czyli pierwszy dobry krok był w kierunku i1->el2
     while (ost2 != i2) // idziemy o jeden dalej, żeby wiedzieć który element listy musimy "zszyć" z i1->el1
     {
         wyn2.push_back(akt2);
         kroczek(akt2, ost2);
     }
-
+//UWAGA po co ta spacja
     link(i1->el1, i1, akt2);
     link(akt2, i2, i1->el1);
     return wyn2;

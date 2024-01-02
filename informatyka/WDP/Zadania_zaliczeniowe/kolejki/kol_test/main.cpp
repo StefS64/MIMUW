@@ -25,13 +25,13 @@ int main() {
   // 0: i2, i3  | 1: i1  | 2: i4
   interesant *i5 = nowy_interesant(0);
   // 0: i2, i3, i5  | 1: i1  | 2: i4
-  show_kolejki();
+  //show_kolejki();
   zmiana_okienka(i4, 0);
   // 0: i2, i3, i5, i4  | 1: i1  | 2:
-  show_kolejki();
+  //show_kolejki();
   naczelnik(0);
   cout <<"test"<<endl;
-  show_kolejki();
+  //show_kolejki();
   // 0: i4, i5, i3, i2  | 1: i1  | 2:
   std::vector<interesant*> v(fast_track(i5, i2));
   // 0: i4  | 1: i1  | 2:
@@ -54,18 +54,18 @@ int main() {
   cout <<"test3"<<endl;
   // 0: i4  | 1: i7  | 2: i6
   free(i1);
-  show_kolejki();
+  //show_kolejki();
   zamkniecie_okienka(0, 1);
   // 0:  | 1: i7, i4  | 2: i6
-  show_kolejki();
+  //show_kolejki();
   zamkniecie_okienka(2, 1);
-  show_kolejki();
+  //show_kolejki();
   // 0:  | 1: i7, i4, i6  | 2:
   zamkniecie_okienka(1, 2);
   // 0:  | 1:  | 2: i7, i4, i6
   interesant *i8 = nowy_interesant(0);
   // 0: i8  | 1:  | 2: i7, i4, i6
-  show_kolejki(); 
+  //show_kolejki(); 
   v = zamkniecie_urzedu();
   // 0:  | 1:  | 2:
   assert(v.size() == 4U);

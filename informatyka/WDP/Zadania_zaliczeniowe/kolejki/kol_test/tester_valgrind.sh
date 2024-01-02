@@ -7,7 +7,7 @@ fi
 
 wrong_test=-1
 
-for((i = 0; i < 20; i++)) {
+for((i = 0; i > -1; i++)) {
     echo "-------------------Test number $i-------------------"
     
     
