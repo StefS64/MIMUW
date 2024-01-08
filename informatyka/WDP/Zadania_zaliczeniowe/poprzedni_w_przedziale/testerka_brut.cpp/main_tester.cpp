@@ -23,7 +23,7 @@ int main() {
          pushBack(nowy);
       }else if (co == 'q'){
          cin >> a >> lo >> hi;
-         cout<<prevInRange(a,lo,hi)<<'\n';
+         cout << prevInRange(a,lo,hi)<<'\n';
       }
    }
    done();

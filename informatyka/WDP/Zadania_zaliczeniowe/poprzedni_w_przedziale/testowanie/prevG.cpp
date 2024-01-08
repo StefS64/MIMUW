@@ -8,9 +8,9 @@ int p(long long a, long long b){
 	return a + (2*(long long)rand() + (long long)rand()%2) % (b-a+1);
 }
 
-const int MAX_OP = 1000000; // maksymalna liczba operacji w teście
-const int MIN_VAL = MIN_VAL; // minimalna wartość w ciągu w teście
-const int MAX_VAL = MAX_VAL; // maksymalna wartość w ciągu w teście
+const int MAX_OP = 1000; // maksymalna liczba operacji w teście
+const int MIN_VAL = INT_MIN; // minimalna wartość w ciągu w teście
+const int MAX_VAL = INT_MAX; // maksymalna wartość w ciągu w teście
 int main()
 {
     ios_base::sync_with_stdio(0); cin.tie(0);

@@ -1,0 +1,9 @@
+//autor: Stefan Świerczewski//
+
+
+testerke należy uzupełnić o prev.cpp.
+Nastepnie odpalic plik tester.sh (bash tester.sh)
+w genereatorce można zmieniać limity n to dlugosc wektora poczatkowego a q reszta zapytan prawdopodobienstwo dodania zamiast zapytania wynosi 1/3
+
+
+Plik jest kompilowany za pomocą:g++ @opcjeCpp main_tester.cpp prev.cpp -o tested_code

@@ -14,13 +14,13 @@ int main(){
    }
    char co;
    int a, lo,hi;
-   for(int i = 0; i < 1 ;i ++){
+   for(int i = 0; i < q ;i ++){
       cin >> co;
       if(co == 'a'){
          cin >> nowy;
          liczby.push_back(nowy);
       }else if (co == 'q'){
-         cin >> a >> lo >>hi;
+         cin >> a >> lo >> hi;
          while(a >= 0){
             if(liczby[a]>=lo && liczby[a]<= hi){
                cout <<a<<'\n';

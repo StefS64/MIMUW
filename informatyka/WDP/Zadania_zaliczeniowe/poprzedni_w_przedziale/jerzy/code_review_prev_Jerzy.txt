@@ -1,0 +1,22 @@
+// CODE REVIEW //
+
+
+
+Uwagi ogólne:
+
+
+
+Uwagi miejscowe:
+12 Literówka "wskażniki"
+
+20 niekosekwencja tu node* __ póżniej node *__
+23-25 zmienne mają te same nazwy co pointery noda zmieniłbym na np r_min, r_max i value
+29 warto umieścić jakiś mały opis funkcji
+33-34 ponownie nazywnictwo zmiennych a pointerów noda
+39 alternatywnie możesz if(numbers), ale twoje czytelniejsze
+39 niekosekwencja z nawiasami elsa, lepiej zrobić jak w linijkach 44-60
+78 Literówka zwiera się
+89 !!zmienne max zmien nazwę na jakąś nie STL-ową np.: Max
+
+
+100 tu wszystko git mądre usuwanie. 

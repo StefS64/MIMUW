@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo "start compiltion"
 if ! g++ @opcjeCpp main_tester.cpp prev.cpp -o tested_code; then
     echo "Compilation error!"
     exit
@@ -13,7 +13,7 @@ if ! g++ @opcjeCpp generator.cpp -o generator; then
     echo "Compilation error!"
     exit
 fi
-
+echo "comp end"
 
 
 
@@ -23,8 +23,11 @@ for((i=1; i > 0; i++))
 do
         echo $i > ziarno
         ./generator < ziarno > input.in
+#	echo "gen_out"
         ./brutal_code < input.in > brut.out
+#	echo "brut_out"
         ./tested_code  < input.in > tested.out
+#	echo "tested_out"
         if diff  -c -b brut.out tested.out > /dev/null
         then
                 echo -e "${COLOR_NC}$i          ${COLOR_GREEN}OK!${COLOR_NC}"
